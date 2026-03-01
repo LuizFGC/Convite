@@ -168,11 +168,11 @@ function abrirConvite() {
 
   let i = 0;
 
-  function digitar() {
+  function digitar() { 
     if (i < mensagem.length) {
       convite.innerHTML += mensagem.charAt(i) === "\n" ? "<br>" : mensagem.charAt(i);
       i++;
-      setTimeout(digitar, 100); // digitação mais rápida para celular
+      setTimeout(digitar, 80); // digitação mais rápida para celular
     } else {
       soltarConfetes();
     }
