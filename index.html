@@ -78,31 +78,21 @@ button:hover {
   z-index: 10;
 }
 
-/* CONFETES DOURADOS PROFISSIONAL */
+/* CONFETES CONTÍNUOS DOURADOS */
 .confete {
   position: fixed;
-  width: 8px;
-  height: 14px;
-  background: linear-gradient(45deg, #FFD700, #FFC700, #FFB700);
   top: -20px;
-  z-index: 9999;
   border-radius: 50%;
   opacity: 0.9;
-  animation-name: cair, girar;
+  z-index: 9999;
+  animation-name: cair;
   animation-timing-function: linear;
   animation-iteration-count: 1;
 }
 
-/* Queda vertical */
 @keyframes cair {
-  0% { transform: translateY(0) translateX(0); opacity: 1; }
-  100% { transform: translateY(100vh) translateX(50px); opacity: 0; }
-}
-
-/* Rotação para efeito natural */
-@keyframes girar {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(720deg); }
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(50px, 100vh) rotate(720deg); opacity: 0; }
 }
 </style>
 </head>
@@ -133,43 +123,50 @@ Vai depender da nossa empolgação 😊
 
 Contamos com a presença de todos vocês!`;
 
+let confeteInterval;
+
 function abrirConvite() {
   document.getElementById("inicio").style.display = "none";
   const convite = document.getElementById("conviteTexto");
   convite.style.display = "block";
   document.getElementById("musica").play();
 
-  let i = 0;
+  iniciarConfetes(); // começa confetes contínuos
 
+  let i = 0;
   function digitar() {
     if (i < mensagem.length) {
       convite.innerHTML += mensagem[i] === "\n" ? "<br>" : mensagem[i];
       i++;
       setTimeout(digitar, 80);
     } else {
-      soltarConfetes();
+      // mantém confetes por 5s após a digitação
+      setTimeout(pararConfetes, 5000);
     }
   }
-
   digitar();
 }
 
-// Confetes dourados profissionais
-function soltarConfetes() {
-  const quantidade = 120; // Mais confetes
-  for (let j = 0; j < quantidade; j++) {
+function iniciarConfetes() {
+  const cores = ["#FFD700","#FFC700","#FFB700"];
+  confeteInterval = setInterval(() => {
     const confete = document.createElement("div");
     confete.classList.add("confete");
 
     confete.style.left = Math.random() * window.innerWidth + "px";
-    confete.style.width = confete.style.height = (8 + Math.random() * 12) + "px";
-    confete.style.animationDuration = (4 + Math.random() * 3) + "s"; // queda mais longa
-    confete.style.transform = `rotate(${Math.random()*360}deg)`;
+    const size = 6 + Math.random() * 12;
+    confete.style.width = confete.style.height = size + "px";
+
+    confete.style.background = `linear-gradient(45deg, ${cores[Math.floor(Math.random()*cores.length)]}, ${cores[Math.floor(Math.random()*cores.length)]})`;
+    confete.style.animationDuration = (4 + Math.random() * 3) + "s";
 
     document.body.appendChild(confete);
-
     confete.addEventListener("animationend", () => confete.remove());
-  }
+  }, 100);
+}
+
+function pararConfetes() {
+  clearInterval(confeteInterval);
 }
 </script>
 
