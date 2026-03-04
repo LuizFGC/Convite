@@ -8,10 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap" rel="stylesheet">
 
 <style>
-html {
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-}
 
 body {
   margin: 0;
@@ -22,7 +18,6 @@ body {
   align-items: center;
   background: url("https://www.transparenttextures.com/patterns/white-linen.png");
   background-color: #f5f1e8;
-  overflow: hidden;
   padding: 10px;
 }
 
@@ -154,7 +149,7 @@ let confeteInterval;
 
 /* ✅ Ajusta o texto pra caber no card sem rolagem */
 function ajustarTextoParaCaber(el) {
-  const maxFont = 18;   // tamanho inicial
+  const maxFont = 12;   // tamanho inicial
   const minFont = 9;    // limite mínimo (pra não sumir)
   el.style.fontSize = maxFont + "px";
 
@@ -195,7 +190,7 @@ function abrirConvite() {
       // ajusta várias vezes durante a digitação
       ajustarComDebounce(convite);
 
-      setTimeout(digitar, 60);
+      setTimeout(digitar, 80);
     } else {
       // ajuste final garantido
       ajustarTextoParaCaber(convite);
@@ -238,3 +233,4 @@ window.addEventListener("resize", () => {
 
 </body>
 </html>
+
