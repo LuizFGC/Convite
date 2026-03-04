@@ -8,7 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap" rel="stylesheet">
 
 <style>
-/* ✅ EVITA O CELULAR "AUMENTAR" O TEXTO AUTOMATICAMENTE */
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -72,12 +71,16 @@ button:hover {
   background: white;
   width: 95vw;
   max-width: 400px;
-  padding: 30px 20px;
+  padding: 16px 12px;              /* menor padding pra caber mais */
   border-radius: 20px;
   border: 2px solid #d4af37;
   box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-  font-size: 12px; /* ✅ SEU TAMANHO */
-  line-height: 1.6;
+
+  max-height: 90vh;                /* ✅ cabe na tela */
+  overflow: hidden;                /* ✅ sem rolagem */
+
+  font-size: 18px;                 /* começa “normal” e o JS reduz se precisar */
+  line-height: 1.28;               /* um pouco mais compacto */
   color: black;
   text-align: center;
   position: relative;
@@ -149,21 +152,53 @@ BOM APETITE !!!😋`;
 
 let confeteInterval;
 
+/* ✅ Ajusta o texto pra caber no card sem rolagem */
+function ajustarTextoParaCaber(el) {
+  const maxFont = 18;   // tamanho inicial
+  const minFont = 9;    // limite mínimo (pra não sumir)
+  el.style.fontSize = maxFont + "px";
+
+  // reduz até caber
+  let size = maxFont;
+  while (size > minFont && el.scrollHeight > el.clientHeight) {
+    size -= 0.5;
+    el.style.fontSize = size + "px";
+  }
+}
+
+// Debounce leve pra não rodar a cada letra
+let ajusteTimer = null;
+function ajustarComDebounce(el) {
+  clearTimeout(ajusteTimer);
+  ajusteTimer = setTimeout(() => ajustarTextoParaCaber(el), 30);
+}
+
 function abrirConvite() {
   document.getElementById("inicio").style.display = "none";
   const convite = document.getElementById("conviteTexto");
   convite.style.display = "block";
-  document.getElementById("musica").play();
+
+  const musica = document.getElementById("musica");
+  musica.play().catch(() => { /* se o celular bloquear, ignora */ });
 
   iniciarConfetes();
+
+  // força medir layout antes de começar
+  requestAnimationFrame(() => ajustarTextoParaCaber(convite));
 
   let i = 0;
   function digitar() {
     if (i < mensagem.length) {
       convite.innerHTML += mensagem[i] === "\n" ? "<br>" : mensagem[i];
       i++;
-      setTimeout(digitar, 80);
+
+      // ajusta várias vezes durante a digitação
+      ajustarComDebounce(convite);
+
+      setTimeout(digitar, 60);
     } else {
+      // ajuste final garantido
+      ajustarTextoParaCaber(convite);
       setTimeout(pararConfetes, 5000);
     }
   }
@@ -191,6 +226,14 @@ function iniciarConfetes() {
 function pararConfetes() {
   clearInterval(confeteInterval);
 }
+
+// Se o usuário girar o celular, reajusta
+window.addEventListener("resize", () => {
+  const convite = document.getElementById("conviteTexto");
+  if (convite && convite.style.display === "block") {
+    ajustarTextoParaCaber(convite);
+  }
+});
 </script>
 
 </body>
